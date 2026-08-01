@@ -613,7 +613,7 @@
                     <p class="maintenance-sub" id="mainMessage">
                         Notre équipe est actuellement en vacances et profite d'une pause bien méritée.
                         On en profite pour améliorer l'expérience, ajouter du contenu et booster les performances.
-                        Merci pour votre patience — ça va valoir le coup.
+                        Merci pour ta patience — ça va valoir le coup.
                     </p>
 
                     <div class="loading-animation">
@@ -643,7 +643,7 @@
                     <div class="info-box">
                         <div class="info-icon"><i class="fas fa-film"></i></div>
                         <div class="info-title">Nouveau contenu</div>
-                        <div class="info-text">Plusieurs films & séries ajoutés à notre catalogue pour ton retour.</div>
+                        <div class="info-text">Des centaines de films & séries ajoutés à notre catalogue pour ton retour.</div>
                     </div>
                     <div class="info-box">
                         <div class="info-icon"><i class="fas fa-shield-alt"></i></div>
@@ -698,9 +698,19 @@
                         </button>
 
                         <div class="contact-line">
-                            Besoin d'aide ? <a href="/cdn-cgi/l/email-protection#ef8c80819b8e8c9baf958a8189838697c1899d"><span class="__cf_email__" data-cfemail="c5a6aaabb1a4a6b185bfa0aba3a9acbdeba3b7">[email&#160;protected]</span></a><br>
+                            Besoin d'aide ? <span id="contactEmail"></span><br>
                             ou DM sur <a href="#" onclick="showToast('Lien Discord bientôt disponible'); return false;">Discord</a>
                         </div>
+                        <script>
+                            // Anti-Cloudflare : l'email est construit en JS pour éviter le [email protected]
+                            (function(){
+                                var u = 'zenflix';
+                                var d = 'outlook.fr';
+                                var e = u + '@' + d;
+                                var el = document.getElementById('contactEmail');
+                                if(el) el.innerHTML = '<a href="mailto:'+e+'">'+e+'</a>';
+                            })();
+                        </script>
                     </div>
                 </div>
             </div>
@@ -715,7 +725,7 @@
         </div>
     </main>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         // =========================================================
         // CONFIGURATION - MODIFIE ICI POUR TES VACANCES
         // =========================================================
@@ -822,5 +832,5 @@
 
         console.log('[ZenFlix Maintenance] Page chargée - Bonne vacances ! 🌴');
     </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a245fa4c4a322c31',t:'MTc4NTU5OTIwOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
