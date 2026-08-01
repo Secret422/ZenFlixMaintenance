@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenFlix · Maintenance</title>
+    <link rel="icon" href="ZenFlix.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 
+      ============================================================
+      ZENFLIX - MAINTENANCE PAGE
+      Même DA que le site principal - Prête pour tes vacances
+      -> Modifie les variables dans la section CONFIG ci-dessous
+      ============================================================
+    -->
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #141414;
+            --bg-card: #1a1a1a;
+            --bg-hover: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --text-muted: #6d6d6d;
+            --accent: #e50914;
+            --accent-hover: #ff3d3d;
+            --border: #333333;
+            --radius: 8px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* BACKGROUND EFFECTS - Reprise du style ZenFlix */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 30% 15%, rgba(229, 9, 20, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 80% 80%, rgba(229, 9, 20, 0.08) 0%, transparent 35%),
+                radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.02"/></svg>');
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.35); }
+
+        /* NAVBAR - Identique ZenFlix */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 1.1rem 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 60%, transparent 100%);
+            z-index: 100;
+            backdrop-filter: blur(4px);
+        }
+        .navbar.scrolled { background: #000; }
+        .nav-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 0 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-logo h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+            cursor: default;
+        }
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(229, 9, 20, 0.12);
+            border: 1px solid rgba(229, 9, 20, 0.25);
+            padding: 0.45rem 1rem;
+            border-radius: 100px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        .status-dot {
+            width: 8px; height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulseDot 1.8s infinite;
+            box-shadow: 0 0 8px var(--accent);
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        /* MAIN WRAPPER */
+        .main {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 1.5rem 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .maintenance-card {
+            width: 100%;
+            max-width: 920px;
+            background: linear-gradient(180deg, rgba(26,26,26,0.95) 0%, rgba(20,20,20,0.98) 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.03) inset;
+            position: relative;
+        }
+
+        /* Subtle red top border like ZenFlix featured */
+        .maintenance-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.7;
+        }
+
+        .card-top {
+            padding: 3.2rem 3rem 2.2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-top::after {
+            content: 'ZENFLIX';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 9rem;
+            font-weight: 900;
+            letter-spacing: 12px;
+            color: rgba(255,255,255,0.018);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .badge-maintenance {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(229, 9, 20, 0.15);
+            border: 1px solid rgba(229, 9, 20, 0.35);
+            color: var(--accent);
+            padding: 0.5rem 1.15rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 1.8rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(229,9,20,0.15);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-logo {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 40px rgba(229, 9, 20, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+
+        .maintenance-title {
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        .maintenance-title span {
+            background: linear-gradient(90deg, #fff 30%, #b3b3b3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .maintenance-title .red {
+            background: linear-gradient(90deg, var(--accent), #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .maintenance-sub {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            max-width: 580px;
+            margin: 0 auto 2rem;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Loading dots - Reprise de ton style */
+        .loading-animation {
+            display: flex;
+            gap: 0.9rem;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 2.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .loading-dot {
+            width: 10px; height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: bounceZen 1.4s ease-in-out infinite;
+            box-shadow: 0 0 12px rgba(229,9,20,0.6);
+        }
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+        .loading-dot:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes bounceZen {
+            0%, 80%, 100% { transform: scale(0.4); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* PROGRESS BAR - Style Netflix */
+        .progress-wrapper {
+            max-width: 380px;
+            margin: 0 auto 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .progress-track {
+            height: 4px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 65%;
+            background: linear-gradient(90deg, var(--accent), #ff3d3d);
+            border-radius: 100px;
+            position: relative;
+            animation: progressMove 2.5s ease-in-out infinite;
+            box-shadow: 0 0 12px rgba(229,9,20,0.6);
+        }
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 1.8s infinite;
+        }
+        @keyframes progressMove {
+            0% { width: 42%; }
+            50% { width: 78%; }
+            100% { width: 42%; }
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* GRID INFO */
+        .card-mid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: rgba(255,255,255,0.06);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .info-box {
+            background: var(--bg-secondary);
+            padding: 1.8rem 1.6rem;
+            text-align: left;
+            transition: var(--transition);
+            position: relative;
+        }
+        .info-box:hover {
+            background: var(--bg-card);
+        }
+        .info-icon {
+            width: 44px; height: 44px;
+            background: rgba(229,9,20,0.12);
+            border: 1px solid rgba(229,9,20,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        .info-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            color: var(--text-primary);
+        }
+        .info-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* COUNTDOWN & RETURN */
+        .card-bottom {
+            padding: 2.2rem 3rem;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 2rem;
+            align-items: center;
+            background: rgba(0,0,0,0.25);
+        }
+
+        .return-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .return-label {
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .return-date {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+        .return-date i { color: var(--accent); }
+
+        .countdown {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.7rem;
+        }
+        .cd-item {
+            background: #0f0f0f;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            padding: 0.8rem 0.4rem;
+            text-align: center;
+        }
+        .cd-num {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            line-height: 1;
+            display: block;
+        }
+        .cd-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+        .right-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .notify-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+        .notify-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .notify-row {
+            display: flex;
+            gap: 0.6rem;
+        }
+        .notify-input {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 0.85rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+        }
+        .notify-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(229,9,20,0.15);
+        }
+        .notify-input::placeholder { color: var(--text-muted); }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(229,9,20,0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.85rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+        }
+        .btn-secondary:hover {
+            border-color: var(--text-primary);
+            color: white;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .contact-line {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 0.2rem;
+        }
+        .contact-line a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--border);
+            transition: var(--transition);
+        }
+        .contact-line a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+        /* FOOTER */
+        .mini-footer {
+            margin-top: 2.5rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            position: relative;
+            z-index: 2;
+        }
+        .mini-footer p { margin: 0.3rem 0; }
+
+        /* TOAST - Reprise ZenFlix */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+        }
+        .toast-item {
+            background: #181818;
+            border: 1px solid rgba(255,255,255,0.12);
+            border-left: 4px solid var(--accent);
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            opacity: 0;
+            transform: translateY(12px);
+            transition: all 0.3s ease;
+        }
+        .toast-item.show { opacity: 1; transform: translateY(0); }
+
+        /* RESPONSIVE */
+        @media (max-width: 860px) {
+            .nav-container { padding: 0 1.2rem; }
+            .nav-status { display: none; }
+            .card-mid { grid-template-columns: 1fr; }
+            .card-bottom { grid-template-columns: 1fr; padding: 1.5rem; }
+            .card-top { padding: 2.5rem 1.5rem 1.8rem; }
+            .card-top::after { font-size: 5rem; letter-spacing: 6px; }
+        }
+
+        @media (max-width: 500px) {
+            .main { padding: 6rem 1rem 2rem; }
+            .maintenance-title { font-size: 2rem; }
+            .notify-row { flex-direction: column; }
+            .countdown { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR ZENFLIX -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo"><h1>ZenFlix</h1></div>
+            <div class="nav-status">
+                <span class="status-dot"></span>
+                MAINTENANCE EN COURS
+            </div>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div style="width:100%; max-width:920px;">
+            
+            <!-- CARTE PRINCIPALE -->
+            <div class="maintenance-card">
+                
+                <!-- HEADER -->
+                <div class="card-top">
+                    <div class="badge-maintenance">
+                        <i class="fas fa-tools"></i> Maintenance Programmée
+                    </div>
+
+                    <div class="hero-logo">ZenFlix</div>
+                    
+                    <h1 class="maintenance-title">
+                        <span>On revient</span><br>
+                        <span class="red">plus fort.</span>
+                    </h1>
+
+                    <p class="maintenance-sub" id="mainMessage">
+                        Notre équipe est actuellement en vacances et profite d'une pause bien méritée.
+                        On en profite pour améliorer l'expérience, ajouter du contenu et booster les performances.
+                        Merci pour ta patience — ça va valoir le coup.
+                    </p>
+
+                    <div class="loading-animation">
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                    </div>
+
+                    <div class="progress-wrapper">
+                        <div class="progress-label">
+                            <span>Avancement</span>
+                            <span>Maintenance en cours</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 RAISONS -->
+                <div class="card-mid">
+                    <div class="info-box">
+                        <div class="info-icon"><i class="fas fa-rocket"></i></div>
+                        <div class="info-title">Optimisation</div>
+                        <div class="info-text">Serveurs plus rapides, qualité de streaming améliorée et navigation ultra-fluide.</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-icon"><i class="fas fa-film"></i></div>
+                        <div class="info-title">Nouveau contenu</div>
+                        <div class="info-text">Des centaines de films & séries ajoutés à notre catalogue pour ton retour.</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="info-title">Sécurité renforcée</div>
+                        <div class="info-text">Mise à jour de l'infrastructure et protection des données utilisateurs.</div>
+                    </div>
+                </div>
+
+                <!-- FOOTER CARD: COUNTDOWN + ACTIONS -->
+                <div class="card-bottom">
+                    
+                    <!-- Retour -->
+                    <div class="return-box">
+                        <div class="return-label"><i class="far fa-calendar-alt"></i> Retour estimé</div>
+                        <div class="return-date" id="returnDateDisplay">
+                            <i class="fas fa-plane-departure"></i>
+                            <span id="returnDateText">15 Août 2026 — 18h00</span>
+                        </div>
+
+                        <div class="countdown" id="countdown">
+                            <div class="cd-item">
+                                <span class="cd-num" id="cdDays">00</span>
+                                <span class="cd-label">Jours</span>
+                            </div>
+                            <div class="cd-item">
+                                <span class="cd-num" id="cdHours">00</span>
+                                <span class="cd-label">Heures</span>
+                            </div>
+                            <div class="cd-item">
+                                <span class="cd-num" id="cdMins">00</span>
+                                <span class="cd-label">Minutes</span>
+                            </div>
+                            <div class="cd-item">
+                                <span class="cd-num" id="cdSecs">00</span>
+                                <span class="cd-label">Secondes</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="right-actions">
+                        <div class="notify-form">
+                            <div class="notify-label"><i class="fas fa-bell" style="color:var(--accent); margin-right:0.3rem;"></i> Préviens-moi au retour</div>
+                            <div class="notify-row">
+                                <input type="email" id="notifyEmail" class="notify-input" placeholder="ton@email.com">
+                                <button class="btn-primary" onclick="handleNotify()"><i class="fas fa-paper-plane"></i> OK</button>
+                            </div>
+                        </div>
+
+                        <button class="btn-secondary" onclick="window.location.reload()">
+                            <i class="fas fa-sync-alt"></i> Actualiser la page
+                        </button>
+
+                        <div class="contact-line">
+                            Besoin d'aide ? <a href="/cdn-cgi/l/email-protection#ef8c80819b8e8c9baf958a8189838697c1899d"><span class="__cf_email__" data-cfemail="c5a6aaabb1a4a6b185bfa0aba3a9acbdeba3b7">[email&#160;protected]</span></a><br>
+                            ou DM sur <a href="#" onclick="showToast('Lien Discord bientôt disponible'); return false;">Discord</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MINI FOOTER -->
+            <div class="mini-footer">
+                <p>© 2026 ZenFlix · FR. Tous droits réservés.</p>
+                <p style="color: #555;">By DaRtoXxx — En maintenance pour revenir encore plus fort.</p>
+                <p style="margin-top:1rem;"><i class="fas fa-heart" style="color:var(--accent);"></i> Merci pour ton soutien pendant cette petite pause.</p>
+            </div>
+
+        </div>
+    </main>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // =========================================================
+        // CONFIGURATION - MODIFIE ICI POUR TES VACANCES
+        // =========================================================
+        const CONFIG = {
+            // Change la date de retour ici (format YYYY-MM-DDTHH:MM:SS)
+            returnDate: "2026-08-15T18:00:00",
+
+            // Message affiché (modifiable)
+            returnDateText: "15 Août 2026 — 18h00",
+
+            // Message principal - optionnel
+            mainMessage: null,
+        };
+
+        // Applique le texte de la config
+        document.getElementById('returnDateText').textContent = CONFIG.returnDateText;
+        if (CONFIG.mainMessage) {
+            document.getElementById('mainMessage').textContent = CONFIG.mainMessage;
+        }
+
+        // COUNTDOWN
+        function updateCountdown() {
+            const target = new Date(CONFIG.returnDate).getTime();
+            const now = new Date().getTime();
+            const diff = target - now;
+
+            if (diff <= 0) {
+                document.getElementById('cdDays').textContent = "00";
+                document.getElementById('cdHours').textContent = "00";
+                document.getElementById('cdMins').textContent = "00";
+                document.getElementById('cdSecs').textContent = "00";
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('cdDays').textContent = String(days).padStart(2, '0');
+            document.getElementById('cdHours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('cdMins').textContent = String(mins).padStart(2, '0');
+            document.getElementById('cdSecs').textContent = String(secs).padStart(2, '0');
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // TOAST - Reprise du système ZenFlix
+        function showToast(msg, type = 'info') {
+            let container = document.getElementById('toastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+            const icons = {
+                info: 'fa-info-circle',
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle'
+            };
+            const el = document.createElement('div');
+            el.className = 'toast-item toast-' + type;
+            el.innerHTML = `<i class="fas ${icons[type] || icons.info}" style="color:${type==='success'?'#46d369': type==='error'?'#ff4444':'var(--accent)'}"></i><span>${msg}</span>`;
+            container.appendChild(el);
+            setTimeout(() => el.classList.add('show'), 10);
+            setTimeout(() => {
+                el.classList.remove('show');
+                setTimeout(() => el.remove(), 300);
+            }, 3500);
+        }
+
+        // NOTIFY FORM (front only - stocke en localStorage, prêt pour Supabase si tu veux)
+        function handleNotify() {
+            const input = document.getElementById('notifyEmail');
+            const email = input.value.trim();
+
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showToast('Email invalide.', 'error');
+                return;
+            }
+
+            // Sauvegarde locale
+            const saved = JSON.parse(localStorage.getItem('zenflix_notify_emails') || '[]');
+            if (!saved.includes(email)) {
+                saved.push(email);
+                localStorage.setItem('zenflix_notify_emails', JSON.stringify(saved));
+            }
+
+            input.value = '';
+            showToast('Merci ! On te prévient dès notre retour 🚀', 'success');
+
+            // TODO: Si tu veux connecter à Supabase plus tard, décommente :
+            // window.ZENFLIX_SUPABASE.from('notify_list').insert([{email}])
+        }
+
+        document.getElementById('notifyEmail')?.addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleNotify();
+            }
+        });
+
+        console.log('[ZenFlix Maintenance] Page chargée - Bonne vacances ! 🌴');
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a245fa4c4a322c31',t:'MTc4NTU5OTIwOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
